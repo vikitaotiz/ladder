@@ -1,5 +1,6 @@
 <template>
     <div class="q-pa-md">
+      {{ payments }}
       <q-table
         title="Treats"
         :rows="rows"
@@ -11,6 +12,19 @@
   
 <script setup>
   import { ref } from 'vue';
+import { usePaymentStore } from "src/stores/payments-store";
+import { useQuery, useQueryClient } from "vue-query";
+
+const payment_store = usePaymentStore();
+const queryClient = useQueryClient();
+
+
+// Vue query initial data load - Get payments method
+const {
+  data: payments,
+  isLoading,
+  isError,
+} = useQuery("payments", () => payment_store.fetchPayments());
 
   const columns = ref([
     {

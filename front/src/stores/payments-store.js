@@ -1,16 +1,25 @@
 import { defineStore } from "pinia";
 import {
-    post_call,
-    post_call_logout,
-  } from "src/utilities/api_calls/post_calls";
-  import { storedUser } from "src/utilities/stored_user";
-  
-export const paymentStore = defineStore("payments", {
-    state: () => ({
-      payments: [],
-    }),
+  get_call_module,
+} from "src/utilities/api_calls/module_calls";
+import { storedUser } from "src/utilities/stored_user";
 
-    getters: {
+const user = storedUser();
+const token = user?.token;
 
-    }
-})  
+export const usePaymentStore = defineStore("payments", {
+  state: () => ({
+    payments: [],
+  }),
+
+  actions: {
+    async fetchPayments() {
+      if (token) {
+        const res = await get_call_module("payments", token);
+        this.payments = res?.data;
+        console.log("rtyu ", res);
+        return this.payments;
+      }
+    },
+  },
+});
