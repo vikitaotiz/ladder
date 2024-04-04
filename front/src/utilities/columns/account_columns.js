@@ -1,0 +1,70 @@
+const account_columns = [
+  {
+    name: "production_cost",
+    required: true,
+    label: "Expense",
+    align: "left",
+    field: (row) => row.production_cost,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: "total_sales",
+    required: true,
+    label: "Expected Sales",
+    align: "left",
+    field: (row) => row.total_sales,
+    format: (val) => `${val}`,
+    sortable: true,
+  },
+  {
+    name: "expected_cash",
+    align: "center",
+    label: "Expected Cash",
+    field: "expected_cash",
+    sortable: true,
+  },
+  {
+    name: "expected_mpesa",
+    align: "center",
+    label: "Expected Mpesa",
+    field: "expected_mpesa",
+    sortable: true,
+  },
+  {
+    name: "actual_cash",
+    align: "center",
+    label: "Actual Cash",
+    field: "actual_cash",
+    sortable: true,
+  },
+  {
+    name: "actual_mpesa",
+    align: "center",
+    label: "Actual Mpesa",
+    field: "actual_mpesa",
+    sortable: true,
+  },
+  {
+    name: "user",
+    align: "center",
+    label: "Created By",
+    field: "user",
+    sortable: true,
+  },
+  {
+    name: "created_at",
+    align: "center",
+    label: "Created On",
+    field: "created_at",
+    sortable: true,
+  },
+  // {
+  //   name: "actions",
+  //   align: "center",
+  //   label: "Actions",
+  //   field: "created_at",
+  // },
+];
+
+export { account_columns };
