@@ -29,14 +29,14 @@ class PaymentsController extends Controller
             $response = Mpesa::stkpush($phonenumber, $amount, $account_number);
             $result = json_decode((string)$response, true);
 
-            Payment::create([
-                'merchant_request_id' =>  $result['MerchantRequestID'],
-                'checkout_request_id' =>  $result['CheckoutRequestID'],
-                'result_desc' =>  $result['ResponseDescription'],
-                'phonenumber' => $phonenumber,
-                'amount' => $amount,
-                'account_number' => $account_number
-            ]);
+            // Payment::create([
+            //     'merchant_request_id' =>  $result['MerchantRequestID'],
+            //     'checkout_request_id' =>  $result['CheckoutRequestID'],
+            //     'result_desc' =>  $result['ResponseDescription'],
+            //     'phonenumber' => $phonenumber,
+            //     'amount' => $amount,
+            //     'account_number' => $account_number
+            // ]);
 
             /******************************************/
             DB::commit(); // End of database transactions (Success)

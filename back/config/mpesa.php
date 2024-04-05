@@ -8,13 +8,13 @@ return [
         |The Mpesa Consumer Key
         |------------------------------------------
         */
-    'mpesa_consumer_key' => env('MPESA_CONSUMER_KEY'),
+    'mpesa_consumer_key' => env('MPESA_CONSUMER_KEY', 'Xa2gIgRqQDCRHNMGqdcjd4wI908HWUsT'),
 
     /*-----------------------------------------
         |The Mpesa Consumer Secret
         |------------------------------------------
         */
-    'mpesa_consumer_secret' => env('MPESA_CONSUMER_SECRET'),
+    'mpesa_consumer_secret' => env('MPESA_CONSUMER_SECRET', 'vcqcJNWAIDwhMwtF'),
 
     /*-----------------------------------------
         |The Lipa na Mpesa Online Passkey
@@ -74,7 +74,7 @@ return [
         |Mpesa Lipa Na Mpesa callback url
         |------------------------------------------
         */
-    'callback_url' => env('MPESA_CALLBACK_URL'),
+    'callback_url' => env('MPESA_CALLBACK_URL', '${APP_URL}/api/v1/confirm'),
 
     /*-----------------------------------------
         |Mpesa Transaction Status Result url
