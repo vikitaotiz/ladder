@@ -143,7 +143,8 @@ const register = async () => {
 
   if (userRegister.name && userRegister.email && userRegister.password) {
     loadLogin.value = true;
-    const res = await user_store.login(userLogin);
+    // const res = await user_store.login(userLogin);
+    const res = await user_store.login(userRegister);
 
     if (res.status === "success") redirectUser(res.message, "green");
     else displayErrorMsg(res.message);
