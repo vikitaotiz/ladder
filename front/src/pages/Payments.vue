@@ -1,92 +1,96 @@
 <template>
-    <div class="q-pa-md">
-      {{ payments }}
-      <q-table
-        title="Treats"
-        :rows="rows"
-        :columns="columns"
-        row-key="name"
-      />
-    </div>
+   <div class="q-pa-md">
+         <!-- {{ payments }} -->
+    <q-table
+    title="Payments Records"
+      :rows="payments"
+      row-key="id"
+      :columns="columns"
+          />
+  </div>
 </template>
-  
+
+
+
 <script setup>
   import { ref } from 'vue';
-import { usePaymentStore } from "src/stores/payments-store";
-import { useQuery, useQueryClient } from "vue-query";
+  import { usePaymentStore } from "src/stores/payments-store";
+  import { useQuery } from "vue-query";
 
-const payment_store = usePaymentStore();
-const queryClient = useQueryClient();
+  const paymentStore = usePaymentStore();
 
-
-// Vue query initial data load - Get payments method
-const {
-  data: payments,
-  isLoading,
-  isError,
-} = useQuery("payments", () => payment_store.fetchPayments());
-
-  const columns = ref([
-    {
-      name: 'name',
-      required: true,
-      label: 'Dessert (100g serving)',
-      align: 'left',
-      field: row => row.name,
-      format: val => `${val}`,
-      sortable: true
-    },
-    { name: 'calories', align: 'center', label: 'Calories', field: 'calories', sortable: true },
-    { name: 'fat', label: 'Fat (g)', field: 'fat', sortable: true },
-    { name: 'carbs', label: 'Carbs (g)', field: 'carbs' },
-    { name: 'protein', label: 'Protein (g)', field: 'protein' },
-    { name: 'sodium', label: 'Sodium (mg)', field: 'sodium' },
-    { name: 'calcium', label: 'Calcium (%)', field: 'calcium', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) },
-    { name: 'iron', label: 'Iron (%)', field: 'iron', sortable: true, sort: (a, b) => parseInt(a, 10) - parseInt(b, 10) }
-  ])
-  
-  const rows = ref([
-    {
-      name: 'Frozen Yogurt',
-      calories: 159,
-      fat: 6.0,
-      carbs: 24,
-      protein: 4.0,
-      sodium: 87,
-      calcium: '14%',
-      iron: '1%'
-    },
-    {
-      name: 'Ice cream sandwich',
-      calories: 237,
-      fat: 9.0,
-      carbs: 37,
-      protein: 4.3,
-      sodium: 129,
-      calcium: '8%',
-      iron: '1%'
-    },
-    {
-      name: 'Eclair',
-      calories: 262,
-      fat: 16.0,
-      carbs: 23,
-      protein: 6.0,
-      sodium: 337,
-      calcium: '6%',
-      iron: '7%'
-    },
-    {
-      name: 'Cupcake',
-      calories: 305,
-      fat: 3.7,
-      carbs: 67,
-      protein: 4.3,
-      sodium: 413,
-      calcium: '3%',
-      iron: '8%'
-    }
-  ])
-  
+  const { data: payments, isLoading,
+     isError } = useQuery("payments", () => paymentStore.fetchPayments());
+     const columns = ref([
+  {
+    name: 'result_desc',
+    label: 'Result Description',
+    align: 'left',
+    field: 'result_desc',
+    sortable: true
+  },
+  {
+    name: 'result_code',
+    label: 'Result Code',
+    align: 'left',
+    field: 'result_code',
+    sortable: true
+  },
+  {
+    name: 'merchant_request_id',
+    label: 'Merchant Request ID',
+    align: 'left',
+    field: 'merchant_request_id',
+    sortable: true
+  },
+  {
+    name: 'checkout_request_id',
+    label: 'Checkout Request ID',
+    align: 'left',
+    field: 'checkout_request_id',
+    sortable: true
+  },
+  {
+    name: 'amount',
+    label: 'Amount',
+    align: 'right',
+    field: 'amount',
+    sortable: true
+  },
+  {
+    name: 'mpesa_receipt_number',
+    label: 'Mpesa Receipt Number',
+    align: 'left',
+    field: 'mpesa_receipt_number',
+    sortable: true
+  },
+  {
+    name: 'transaction_date',
+    label: 'Transaction Date',
+    align: 'left',
+    field: 'transaction_date',
+    sortable: true
+  },
+  {
+    name: 'phonenumber',
+    label: 'Phone Number',
+    align: 'left',
+    field: 'phonenumber',
+    sortable: true
+  },
+  {
+    name: 'account_number',
+    label: 'Account Number',
+    align: 'left',
+    field: 'account_number',
+    sortable: true
+  },
+  {
+    name: 'created_at',
+    label: 'Created At',
+    align: 'left',
+    field: 'created_at',
+    sortable: true
+  }
+]);
 </script>
-  
