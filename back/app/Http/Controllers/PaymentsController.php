@@ -29,14 +29,22 @@ class PaymentsController extends Controller
             $response = Mpesa::stkpush($phonenumber, $amount, $account_number);
             $result = json_decode((string)$response, true);
 
-            // Payment::create([
-            //     'merchant_request_id' =>  $result['MerchantRequestID'],
-            //     'checkout_request_id' =>  $result['CheckoutRequestID'],
-            //     'result_desc' =>  $result['ResponseDescription'],
-            //     'phonenumber' => $phonenumber,
-            //     'amount' => $amount,
-            //     'account_number' => $account_number
-            // ]);
+
+    if (!empty($result)) {
+            // Output a message indicating that payload is received
+            echo "JSON Payload Received:\n";
+            echo json_encode($result, JSON_PRETTY_PRINT) . "\n";
+        }
+
+
+            Payment::create([
+                'merchant_request_id' =>  $result['MerchantRequestID'],
+                'checkout_request_id' =>  $result['CheckoutRequestID'],
+                'result_desc' =>  $result['ResponseDescription'],
+                'phonenumber' => $phonenumber,
+                'amount' => $amount,
+                'account_number' => $account_number
+            ]);
 
             /******************************************/
             DB::commit(); // End of database transactions (Success)

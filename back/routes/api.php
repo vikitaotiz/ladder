@@ -7,6 +7,9 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\RecordController;
 
+
+use App\Http\Controllers\PaymentsC;
+
 // Route::post('/v1/stk_push', [PaymentsController::class, 'STKPush']);
 // Route::post('/v1/confirm', [PaymentsController::class, 'STKConfirm']);
 
@@ -34,6 +37,11 @@ Route::group(['prefix' => 'v1'], function(){
         Route::post('/confirm', [PaymentsController::class, 'STKConfirm']);
 
         Route::get('/payments', [RecordController::class, 'index']);
+   
+
+   
+        
+        Route::post('/paym', [PaymentsC::class, 'initiatePayment']);
     });
 });
 
