@@ -18,6 +18,7 @@ Route::group(['prefix' => 'v1'], function(){
     // Public Routes/End Points
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
+    Route::post('/confirm_pay', [PaymentsC::class, 'STKConfirm']);
 
     // Private/Protected Routes
     Route::group(['middleware' => ['auth:sanctum']], function(){
@@ -41,7 +42,8 @@ Route::group(['prefix' => 'v1'], function(){
 
    
         
-        Route::post('/paym', [PaymentsC::class, 'initiatePayment']);
+        Route::post('/stkpush_pay', [PaymentsC::class, 'initiatePayment']);
+
     });
 });
 

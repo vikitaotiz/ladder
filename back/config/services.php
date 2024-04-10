@@ -35,5 +35,8 @@ return [
         'consumer_secret' => env('DARAJA_CONSUMER_SECRET'),
         'shortcode' => env('DARAJA_SHORTCODE'),
         'passkey' => env('DARAJA_PASSKEY'),
+        'callback' => env('MPESA_CALLACK_URL'),
+        'mpesa_env' => env('MPESA_ENVIRONMENT'),
     ],
 ];
+
