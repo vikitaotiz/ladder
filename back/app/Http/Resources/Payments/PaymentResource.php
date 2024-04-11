@@ -14,6 +14,8 @@ class PaymentResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        console.log("rs");
+
         return [
             "result_desc" => $this->result_desc,
             "result_code" => $this->result_code,

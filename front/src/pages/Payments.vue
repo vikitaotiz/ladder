@@ -1,36 +1,110 @@
 <template>
   <div class="q-pa-md">
-    <!-- {{ payments }} -->
+    <q-btn-toggle
+      name="genre"
+      v-model="genre"
+      push
+      glossy
+      toggle-color="teal"
+      :options="[
+        { label: 'All', value: 2 },
+        { label: 'Successful', value: 1 },
+        { label: 'Canceled', value: 0 },
+        { label: 'Incomplete', value: null },
+      ]"
+       @change="updateResultCode"
+    />
     <q-table
       title="Payments Records"
       :rows="payments"
       row-key="id"
       :columns="columns"
     >
-    <template #top-right>
-        <q-btn
-          v-if="isLoading"
-          color="primary"
-          label="Loading..."
-          loading
-        />
+      <template #top-right>
+        <q-btn v-if="isLoading" color="primary" label="Loading..." loading />
       </template>
     </q-table>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, watchEffect } from 'vue';
 import { usePaymentStore } from "src/stores/payments-store";
 import { useQuery } from "vue-query";
 
+const genre = ref('All');
+const resultCode = ref(2); // Default value
+
 const paymentStore = usePaymentStore();
 
-const {
-  data: payments,
-  isLoading,
-  isError,
-} = useQuery("payments", () => paymentStore.fetchPayments());
+// // Log before invoking useQuery
+// console.log("Calling useQuery...");
+// const {
+//   data: payments,
+//   isLoading,
+//   isError,
+// } = useQuery("payments", () => {
+//   console.log("useQuery is invoked");
+//   console.log(genre.value);
+//   return paymentStore.fetchPayments(genre.value);
+// });
+
+// const updateResultCode = (value) => {
+//   console.log("Value of genre:", value);
+//   switch (value) {
+//     case 2:
+//       resultCode.value = 2;
+//       break;
+//     case 1:
+//       resultCode.value = 0;
+//       break;
+//     case 0:
+//       resultCode.value = 1;
+//       break;
+//     default:
+//       resultCode.value = 3;
+//   }
+// };
+// watchEffect(() => {
+//   switch (genre.value) {
+//     case 'All':
+//       resultCode.value = 2;
+//       console.log("Genre:", genre.value); // Log the current value of genre
+//       break;
+//     case 'Successful':
+//       resultCode.value = 0;
+//       console.log("Genre:", genre.value); // Log the current value of genre
+//       break;
+//     case 'Canceled':
+//       resultCode.value = 1;
+//       console.log("Genre:", genre.value); // Log the current value of genre
+//       break;
+//     case 'Incomplete':
+//       resultCode.value = 3;
+//       console.log("Genre:", genre.value); // Log the current value of genre
+//       break;
+//     default:
+//       resultCode.value = 1; // Default value
+//   }
+// });
+// const genre = ref(2);
+
+// Computed property to execute useQuery whenever genre changes
+const { data: payments, isLoading, isError } = computed(() => {
+  console.log("Genre changed:", genre.value);
+  // Execute useQuery function with the current genre value
+  return useQuery("payments", () => {
+    console.log("useQuery is invoked");
+    console.log(genre.value);
+    return paymentStore.fetchPayments(genre.value);
+  });
+});
+
+// Function to update genre value
+const updateResultCode = (newGenre) => {
+  console.log("Genre changed:", newGenre);
+  genre.value = newGenre;
+};
 const columns = ref([
   {
     name: "result_desc",
