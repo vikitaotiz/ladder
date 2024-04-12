@@ -1,9 +1,22 @@
 <template>
   <div class="q-pa-md">
     <!-- {{ payments }} -->
+    <q-btn-toggle
+      name="genre"
+      v-model="genre"
+      push
+      glossy
+      toggle-color="teal"
+      :options="[
+        { label: 'All', value: 2 },
+        { label: 'Successful', value: 1 },
+        { label: 'Canceled', value: 0 },
+        { label: 'Incomplete', value: null },
+      ]"
+    />
     <q-table
       title="Payments Records"
-      :rows="payments"
+      :rows="currentItems"
       row-key="id"
       :columns="columns"
     >
@@ -20,17 +33,43 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import { usePaymentStore } from "src/stores/payments-store";
 import { useQuery } from "vue-query";
 
 const paymentStore = usePaymentStore();
 
-const {
-  data: payments,
-  isLoading,
-  isError,
-} = useQuery("payments", () => paymentStore.fetchPayments());
+// Function to fetch data for a key
+async function fetchData(key) {
+  return paymentStore.fetchPayments(key);
+}
+
+// Object to store fetched data
+const dataMap = ref({});
+const genre = ref(2); 
+
+// UseQuery hook to fetch initial data
+const { data: initialItems, isLoading, isError } = useQuery(
+  ['payments', genre.value], // Use the initial genre value in the query key
+  () => fetchData(genre.value)
+);
+
+// Store the initial data in dataMap
+dataMap.value[genre.value] = initialItems;
+
+// Computed property to get the current data based on the selected genre
+const currentItems = computed(() => dataMap.value[genre.value]);
+
+watchEffect(() => {
+  const newGenre = genre.value;
+  // Fetch data for the new genre
+  fetchData(newGenre).then(items => {
+    // Update the dataMap with the fetched data
+    dataMap.value[newGenre] = items;
+  }).catch(error => {
+    console.error('Error fetching data:', error);
+  });
+});
 const columns = ref([
   {
     name: "result_desc",
