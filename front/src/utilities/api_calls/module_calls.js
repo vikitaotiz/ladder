@@ -22,8 +22,9 @@ const get_call_module = async (path, token, resultCode) => {
     },
   });
 
-console.log(resultCode ===  resultCode);
-console.log(resultCode);
+  forceLogout(res.status);
+
+  // const res_data = res.json();  
   const res_data = await res.json();
 
   return res_data;

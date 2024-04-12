@@ -12,21 +12,21 @@ class RecordController extends Controller
     //     return PaymentResource::collection(Payment::all());
     // }
     public function index(Request $request){
-        $resultCode = $request->input('resultCode');
-
-        // // Filter payments based on the resultCode parameter
-        // $payments = Payment::query();
-
-        // if ($resultCode !== null) {
-        //     $payments->where('result_code', $resultCode);
-        //     return PaymentResource::collection($payments->get());
-
-        // }else{
-        // return PaymentResource::collection(Payment::all());
-
-        // }
-        console.log($resultCode);
-        return PaymentResource::collection(Payment::all());
-
+        $resultCode = $request->query('resultCode');
+   
+        if ((int)$resultCode === 2) {
+            // Fetch all records if $resultCode is 2
+            $payments = Payment::all();
+        } else if ($resultCode === "null")
+         {
+            // Fetch records based on the provided $resultCode
+            $payments = Payment::where('result_code', null)->get();
+        }
+        else {
+            // Fetch records based on the provided $resultCode
+            $payments = Payment::where('result_code', $resultCode)->get();
+        }
+        // Return the collection using PaymentResource
+        return PaymentResource::collection($payments);
     }
 }

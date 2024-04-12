@@ -9,8 +9,8 @@
       toggle-color="teal"
       :options="[
         { label: 'All', value: 2 },
-        { label: 'Successful', value: 1 },
-        { label: 'Canceled', value: 0 },
+        { label: 'Successful', value: 0 },
+        { label: 'Canceled', value: 1 },
         { label: 'Incomplete', value: null },
       ]"
     />
@@ -19,15 +19,9 @@
       :rows="currentItems"
       row-key="id"
       :columns="columns"
-    >
-    <template #top-right>
-        <q-btn
-          v-if="isLoading"
-          color="primary"
-          label="Loading..."
-          loading
-        />
-      </template>
+      :loading="isLoading"      
+    >    
+    
     </q-table>
   </div>
 </template>
@@ -39,37 +33,42 @@ import { useQuery } from "vue-query";
 
 const paymentStore = usePaymentStore();
 
-// Function to fetch data for a key
-async function fetchData(resultCode) {
-  return paymentStore.fetchPayments(resultCode);
-}
-
 // Object to store fetched data
 const dataMap = ref({});
 const genre = ref(2); 
-
+// const loading = ref(true);
+// Function to fetch data for a key
+async function fetchData(resultCode) {
+    return paymentStore.fetchPayments(resultCode);
+  
+}
 // UseQuery hook to fetch initial data
-const { data: initialItems, isLoading, isError } = useQuery(
+const { data: initialItems, isLoad } = useQuery(
   ['payments', genre.value], // Use the initial genre value in the query key
   () => fetchData(genre.value)
 );
-
 // Store the initial data in dataMap
 dataMap.value[genre.value] = initialItems;
 
 // Computed property to get the current data based on the selected genre
 const currentItems = computed(() => dataMap.value[genre.value]);
 
+
+// Computed property to get the current data based on the selected genre
+const isLoading = computed(() => genre.value);
+
+
 watchEffect(() => {
   const newGenre = genre.value;
   // Fetch data for the new genre
   fetchData(newGenre).then(items => {
-    // Update the dataMap with the fetched data
+    // Update the dataMap with the fetched data    
     dataMap.value[newGenre] = items;
   }).catch(error => {
     console.error('Error fetching data:', error);
   });
 });
+
 const columns = ref([
   {
     name: "result_desc",
