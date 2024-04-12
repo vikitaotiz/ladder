@@ -1,16 +1,30 @@
 import { base_url, forceLogout } from "../helpers";
 
-const get_call_module = async (path, token) => {
-  const res = await fetch(`${base_url}/${path}`, {
+// const get_call_module = async (path, token) => {
+//   const res = await fetch(`${base_url}/${path}`, {
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${token}`,
+//     },
+//   });
+
+//   forceLogout(res.status);
+
+//   const res_data = res.json();
+
+//   return res_data;
+// };
+const get_call_module = async (path, token, resultCode) => {
+  const res = await fetch(`${base_url}/${path}?resultCode=${resultCode}`, {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
   });
 
-  forceLogout(res.status);
-
-  const res_data = res.json();
+console.log(resultCode ===  resultCode);
+console.log(resultCode);
+  const res_data = await res.json();
 
   return res_data;
 };

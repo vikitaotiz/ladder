@@ -40,8 +40,8 @@ import { useQuery } from "vue-query";
 const paymentStore = usePaymentStore();
 
 // Function to fetch data for a key
-async function fetchData(key) {
-  return paymentStore.fetchPayments(key);
+async function fetchData(resultCode) {
+  return paymentStore.fetchPayments(resultCode);
 }
 
 // Object to store fetched data
