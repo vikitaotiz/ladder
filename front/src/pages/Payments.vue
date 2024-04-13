@@ -19,9 +19,15 @@
       :rows="currentItems"
       row-key="id"
       :columns="columns"
-      :loading="isLoading"      
     >    
-    
+    <template #top-right>
+        <q-btn
+        v-if="isDataLoaded"
+          color="primary"
+          label="Loading..."
+          loading
+        />
+      </template>
     </q-table>
   </div>
 </template>
@@ -30,7 +36,7 @@
 import { ref, computed, watchEffect } from "vue";
 import { usePaymentStore } from "src/stores/payments-store";
 import { useQuery } from "vue-query";
-
+const isDataLoaded = ref(false);
 const paymentStore = usePaymentStore();
 
 // Object to store fetched data
@@ -43,7 +49,7 @@ async function fetchData(resultCode) {
   
 }
 // UseQuery hook to fetch initial data
-const { data: initialItems, isLoad } = useQuery(
+const { data: initialItems } = useQuery(
   ['payments', genre.value], // Use the initial genre value in the query key
   () => fetchData(genre.value)
 );
@@ -54,19 +60,19 @@ dataMap.value[genre.value] = initialItems;
 const currentItems = computed(() => dataMap.value[genre.value]);
 
 
-// Computed property to get the current data based on the selected genre
-const isLoading = computed(() => genre.value);
-
-
 watchEffect(() => {
   const newGenre = genre.value;
   // Fetch data for the new genre
+  isDataLoaded.value = true;
   fetchData(newGenre).then(items => {
     // Update the dataMap with the fetched data    
     dataMap.value[newGenre] = items;
+
   }).catch(error => {
     console.error('Error fetching data:', error);
   });
+  isDataLoaded.value = false;
+
 });
 
 const columns = ref([
