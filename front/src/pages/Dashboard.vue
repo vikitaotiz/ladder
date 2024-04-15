@@ -14,7 +14,7 @@
   </div> -->
 </div>
 <div class="container">
-    <Bar v-if="loaded" :data=Payments />
+    <Bar v-if="loaded" :data=chartData />
   </div>
 </template>
 
@@ -72,17 +72,29 @@ setup() {
     const dataMap = ref({});
     onMounted(async () => {
       try {
+        
         const { data: payments, isLoading, isError } = useQuery("payments", () => paymentStore.fetchPayments(0));
         dataMap.value[0] = payments;
         const currentItems = computed(() => dataMap.value[0]);
         // Assuming paymentStore.fetchPayments returns an array of data
+        const pays = payments.data;
+
+        const amounts = [];
+        // amounts.push(parseFloat(payments[0].amount));
+// amounts = dataMap.value[0];
+        // for (let i = 0; i < pays.length; i++) {
+        //   amounts.push(parseFloat(pays[i].amount));
+        // }
+
+
         chartData.value = {
            datasets: [{
             label: 'Payments',
             backgroundColor: 'blue', // Customize as needed
-            data: currentItems // Modify according to your data structure
+            data: amounts // Modify according to your data structure
           }]
         };
+        console.log(currentItems);
 
         loaded.value = true;
       } catch (e) {
