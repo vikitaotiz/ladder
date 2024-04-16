@@ -14,7 +14,9 @@
   </div> -->
 </div>
 <div class="container">
-    <Bar v-if="loaded" :data=chartData  />
+    <Bar  :data="chartData2"  />
+    <Doughnut 
+    :data="chartData2" />
   </div>
 </template>
 
@@ -31,19 +33,61 @@ const mp = [];
 export default {
   name: 'Dashboard',
   components: { Bar, Doughnut },
-  // data() {
-  //   return {
-  //     mp,
-  //     chartData: {
-  //       labels: [],
-  //       datasets: [{
-  //         label: 'Amount',
-  //         backgroundColor: 'blue',
-  //         data: []
-  //       }]
-  //     }
-  //   };
-  // },
+  data() {
+    return {
+      mp,
+      chartData2: {
+        labels: [],
+        datasets: [{
+          label: 'Amount',
+          backgroundColor: 'blue',
+          data: []
+        }]
+      }
+    };
+  },
+  methods: {
+      async function fetchPaymentsData() {
+    try {
+        const payments = await paymentStore.fetchPayments(0);
+        
+        chartData.value.datasets[0].data = payments.__v_raw[0].amount;
+        this.chartData2 = chartData.value;
+      //  chartData = chartData._rawValue.datasets[0].data;
+        console.log(chartData.value.datasets[0].data);
+        console.log("my amt", payments.__v_raw[0].amount);
+        console.log("my cdata", chartData.value);
+  
+
+
+return { payments, chartData};
+ } 
+ 
+ catch (error) {
+        console.error('Error fetching payments data:', error);
+        throw error;
+    }
+// Define chartData as a reactive object
+  }
+// Usage
+fetchPaymentsData()
+    .then(payments => {
+        // Do something with the payments data
+        
+        console.log('Payments data:', payments);
+    })
+    .catch(error => {
+        // Handle errors
+        console.error('Error fetching payments data:', error);
+    });
+
+      // Assuming chartData is available in your component data
+      this.storedData = [...chartData._rawValue.datasets[0].data];
+      // If you want to make a copy of the array, use spread operator
+      // If you want to directly reference the original array, you can simply assign it without spread operator
+    }
+  }
+ 
   // data: () => ({
   //   loaded: false,
   //   // chartData: null,
@@ -80,113 +124,111 @@ export default {
 //       console.error(e)
 //     }
 //   }  
-setup() {
-    const loaded = ref(false);
-    // const chartData = ref(null);
-    const dataMap = ref({});
-    const chartData = ref({
-  datasets: [{
-    label: [], // Provide a label for the dataset
-    backgroundColor: 'blue', // Customize as needed
-    data: [] // Initialize with an empty array
-  }]
-});
-    onMounted(async () => {
-        async function fetchPaymentsData() {
-    try {
-        const payments = await paymentStore.fetchPayments(0);
+// setup() {
+//     const loaded = ref(false);
+//     // const chartData = ref(null);
+//     const dataMap = ref({});
+//     const chartData = ref({
+//   datasets: [{
+//     label: [], // Provide a label for the dataset
+//     backgroundColor: 'blue', // Customize as needed
+//     data: [] // Initialize with an empty array
+//   }]
+// });
+
+//         async function fetchPaymentsData() {
+//     try {
+//         const payments = await paymentStore.fetchPayments(0);
         
-        chartData.value.datasets[0].data = payments.__v_raw[0].amount;
-        console.log(chartData.value.datasets[0].data);
-        console.log("my amt", payments.__v_raw[0].amount);
-        console.log(chartData);
-  //       for (let i = 0; i < chartData.value.datasets.length; i++) {
-  // const dataset = chartData.value.datasets[i];
+//         this.chartData.value.datasets[0].data = payments.__v_raw[0].amount;
+//       //  chartData = chartData._rawValue.datasets[0].data;
+//         console.log(chartData.value.datasets[0].data);
+//         console.log("my amt", payments.__v_raw[0].amount);
+//         console.log("my cdata", chartData.value);
+//   //       for (let i = 0; i < chartData.value.datasets.length; i++) {
+//   // const dataset = chartData.value.datasets[i];
   
-  // // Extract label, backgroundColor, and data from the dataset
-  // const extractedDataset = {
-  //   label: dataset.label,
-  //   backgroundColor: dataset.backgroundColor,
-  //   data: dataset.data
-  // };
+//   // // Extract label, backgroundColor, and data from the dataset
+//   // const extractedDataset = {
+//   //   label: dataset.label,
+//   //   backgroundColor: dataset.backgroundColor,
+//   //   data: dataset.data
+//   // };
   
-  // Push the extracted dataset to the chartData datasets array
-  // chartData.datasets.push(extractedDataset);
-  // console.log(dataset.data);
-  // const chartData = dataset.data;
-  console.log(chartData);
+//   // Push the extracted dataset to the chartData datasets array
+//   // chartData.datasets.push(extractedDataset);
+//   // console.log(dataset.data);
+//   // const chartData = dataset.data;
 
 
+//   // chartData.value.datasets[0].data.push(payments.__v_raw[0].amount);
 
 
-
-return chartData;
- } 
+// return { payments, chartData};
+//  } 
  
- catch (error) {
-        console.error('Error fetching payments data:', error);
-        throw error;
-    }
-// Define chartData as a reactive object
-
-
-// Usage
-fetchPaymentsData()
-    .then(payments => {
-        // Do something with the payments data
+//  catch (error) {
+//         console.error('Error fetching payments data:', error);
+//         throw error;
+//     }
+// // Define chartData as a reactive object
+//   }
+// // Usage
+// fetchPaymentsData()
+//     .then(payments => {
+//         // Do something with the payments data
         
-        console.log('Payments data:', payments);
-    })
-    .catch(error => {
-        // Handle errors
-        console.error('Error fetching payments data:', error);
-    });
+//         console.log('Payments data:', payments);
+//     })
+//     .catch(error => {
+//         // Handle errors
+//         console.error('Error fetching payments data:', error);
+//     });
 
 
-//         const { data: payments, isLoading, isError } = await useQuery("payments", () => paymentStore.fetchPayments(0));
-//         dataMap.value[0] = payments;
-//         const currentItems = computed(() => dataMap.value[0]);
-//         if (!isLoading) {
-        // Extract the payments data from the object
+// //         const { data: payments, isLoading, isError } = await useQuery("payments", () => paymentStore.fetchPayments(0));
+// //         dataMap.value[0] = payments;
+// //         const currentItems = computed(() => dataMap.value[0]);
+// //         if (!isLoading) {
+//         // Extract the payments data from the object
         
-// const paymnts = payments._object.data;
-// const rawPayments = Object.assign({}, payments);
-// // Stringify the payments data
-// const paymentsString = JSON.stringify(rawPayments);
-//         console.log("my pym", JSON.stringify(paymentsString));
-// } 
-// else{
-//   console.log("loading");
-// }
+// // const paymnts = payments._object.data;
+// // const rawPayments = Object.assign({}, payments);
+// // // Stringify the payments data
+// // const paymentsString = JSON.stringify(rawPayments);
+// //         console.log("my pym", JSON.stringify(paymentsString));
+// // } 
+// // else{
+// //   console.log("loading");
+// // }
     
 
-//         // Assuming paymentStore.fetchPayments returns an array of data
-//         if (isLoading) {
-//   // Render a loading indicator or placeholder component
-//   return console.log("my paym", payments.value);
-// }
-//         const pays = payments.data;
-//         // console.log("my paym", payments.value);
-//         const { data } = payments;
+// //         // Assuming paymentStore.fetchPayments returns an array of data
+// //         if (isLoading) {
+// //   // Render a loading indicator or placeholder component
+// //   return console.log("my paym", payments.value);
+// // }
+// //         const pays = payments.data;
+// //         // console.log("my paym", payments.value);
+// //         const { data } = payments;
 
-//         const amounts = [];
-        // amounts.push(parseFloat(payments[0].amount));
-// amounts = dataMap.value[0];
-        // for (let i = 0; i < pays.length; i++) {
-        //   amounts.push(parseFloat(pays[i].amount));
-        // }
+// //         const amounts = [];
+//         // amounts.push(parseFloat(payments[0].amount));
+// // amounts = dataMap.value[0];
+//         // for (let i = 0; i < pays.length; i++) {
+//         //   amounts.push(parseFloat(pays[i].amount));
+//         // }
 
 
-        // console.log(currentItems);
+//         // console.log(currentItems);
+    
 
-        loaded.value = true;
-      } catch (e) {
-        console.error(e);
-      }
-    });
+//     return { loaded, chartData };
+//   }
 
-    return { loaded, chartData };
-  }
+  // onMounted(async () => {
+  //       loaded.value = true;
+  //     }
+  //   });
 
-}
 </script>
