@@ -35,6 +35,10 @@ export const usePaymentStore = defineStore("payments", {
         const res = await get_call_module("payments", token, resultCode);
         this.payments = res?.data;
         console.log("rtyu ", res);
+        const { data } = res;
+        data.forEach(item => {
+          console.log("my amt", item.amount); // Accessing the 'name' key
+        });
         return this.payments;
       }
       else {

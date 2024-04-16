@@ -53,12 +53,15 @@ const { data: initialItems } = useQuery(
   ['payments', genre.value], // Use the initial genre value in the query key
   () => fetchData(genre.value)
 );
+
+
 // Store the initial data in dataMap
 dataMap.value[genre.value] = initialItems;
 
 // Computed property to get the current data based on the selected genre
 const currentItems = computed(() => dataMap.value[genre.value]);
 
+console.log("my paym", currentItems.value);
 
 watchEffect(() => {
   const newGenre = genre.value;
