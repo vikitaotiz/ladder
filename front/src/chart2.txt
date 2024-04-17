@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Bar :chart-data="chartData"></Bar>
+    <Bar :data="chartData"></Bar>
   </div>
 </template>
 
@@ -15,27 +15,26 @@ import { usePaymentStore } from "src/stores/payments-store";
 const paymentStore = usePaymentStore();
 
 export default {
+  extends: Bar, // Extend Bar instead of Line
   components: { Bar},
-  data() {
-    return {
-      chartData: null,
-    }
+  props: {
+    initialData: {
+      type: Object,
+      default: null,
+    },
   },
-  mounted (){
-    this.fillData()
-  },
-  methods:{
-    fillData(){
-      this.chartData = {
-        labels: [],
+  setup(props) {
+    const chartData = ref({
+      labels: [],
       datasets: [{
         label: 'Amount',
         backgroundColor: 'blue',
         data: []
       }]
-      }
-    },
-    useQuery(this.chartData, async () {
+    });
+
+    // Fetch data using Vue Query
+    useQuery('chartData', async () => {
       const data = await paymentStore.fetchPayments(0); // Call the fetch function from paymentstore.js
     
         chartData.value.labels = data.labels;
@@ -45,8 +44,17 @@ export default {
         return { chartData };
 
     
-    },;
-  }
- 
+    }, {
+      refetchInterval: 10000, // Example: refetch data every 10 seconds
+    });
+    console.log("hey", chartData.value.datasets[0].data);
+    watchEffect(chartData, (newValue, oldValue) => {
+    console.log('Updated chartData:', newValue);
+    
+  });
+    // Render the chart when data changes
+    return { console.log("j",chartData) };
+  },
+  
 };
 </script>
