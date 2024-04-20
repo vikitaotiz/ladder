@@ -1,52 +1,60 @@
 <template>
   <div>
-    <Bar :chart-data="chartData"></Bar>
-  </div>
+    <apexchart
+      width="500"
+      type="bar"
+      :options="chartOptions"
+      :series="series"
+    ></apexchart>
+      </div>
 </template>
 
 <script>
-import { ref, watchEffect } from 'vue';
-import { useQuery } from 'vue-query';
-import { Bar } from 'vue-chartjs'; // Import Bar from vue-chartjs
-import { Chart as ChartJS,ArcElement, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
-ChartJS.register(ArcElement, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
-import { usePaymentStore } from "src/stores/payments-store";
-
-const paymentStore = usePaymentStore();
+import VueApexCharts from "vue3-apexcharts";
 
 export default {
-  components: { Bar},
-  data() {
+  components: {
+    apexchart: VueApexCharts,
+  },
+  data: function() {
     return {
-      chartData: null,
-    }
+      chartOptions: {
+        chart: {
+          id: "vuechart-example",
+        },
+        xaxis: {
+          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+        },
+      },
+      series: [
+        {
+          name: "series-1",
+          data: [30, 40, 45, 50, 49, 60, 70, 81],
+        },
+      ],
+    };
   },
-  mounted (){
-    this.fillData()
-  },
-  methods:{
-    fillData(){
-      this.chartData = {
-        labels: [],
-      datasets: [{
-        label: 'Amount',
-        backgroundColor: 'blue',
-        data: []
-      }]
-      }
-    },
-    useQuery(this.chartData, async () {
-      const data = await paymentStore.fetchPayments(0); // Call the fetch function from paymentstore.js
-    
-        chartData.value.labels = data.labels;
-        chartData.value.datasets[0].data = data.__v_raw[0].amount; // Assuming your data structure has values array
-        console.log("hey", data.__v_raw[0].amount);
-        console.log("hey", chartData.value.datasets[0].data);
-        return { chartData };
+  methods: {
+    updateChart() {
+      const max = 90;
+      const min = 20;
+      const newData = this.series[0].data.map(() => {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      });
 
-    
-    },;
-  }
- 
+      const colors = ["#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0"];
+
+      // Make sure to update the whole options config and not just a single property to allow the Vue watch catch the change.
+      this.chartOptions = {
+        colors: [colors[Math.floor(Math.random() * colors.length)]],
+      };
+      // In the same way, update the series option
+      this.series = [
+        {
+          data: newData,
+        },
+      ];
+    },
+  },
 };
 </script>
