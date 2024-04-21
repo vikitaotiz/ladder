@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <apexchart
       width="500"
@@ -7,9 +7,66 @@
       :series="series"
     ></apexchart>
       </div>
+</template> -->
+
+<template>
+  <div v-if="status === 'loading'">Loading...</div>
+  <div v-else-if="status === 'error'">Error fetching data</div>
+  <div v-else>
+    <vue-apex-charts :options="chartOptions" :series="series" type="bar" height="350" />
+  </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue';
+import { usePaymentStore } from "src/stores/payments-store";
+import { useQuery } from "vue-query";
+import VueApexCharts from 'vue3-apexcharts';
+
+const paymentStore = usePaymentStore();
+
+const {  data: payments, status} = useQuery("payments", () => paymentStore.fetchPayments());
+console.log("mydata", payments);
+payments.forEach(payment => {
+  const amount = payment.amount;
+  console.log('Payment amount:', amount);
+});
+
+if (status === "loading") {
+  console.log("Loading...");
+} else if (status === "error") {
+  console.log("Error fetching data");
+}
+const series = ref([
+{
+          name: "series-1",
+          data: payments,
+        },
+]);
+const chartOptions = ref({
+  chart: {
+    id: 'vue-chart',
+    toolbar: {
+      show: false,
+    },
+  },
+  xaxis: {
+    categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+  },
+});
+
+// if (true) {
+//   chartOptions.value.xaxis.categories = data.categories;
+//   series.value = [{
+//     name: 'Series 1',
+//     data: [30, 40, 45, 50, 49, 60, 70, 81],
+//     }];
+// }
+</script>
+
+
+
+<!-- <script>
 import VueApexCharts from "vue3-apexcharts";
 
 export default {
@@ -57,4 +114,4 @@ export default {
     },
   },
 };
-</script>
+</script> -->

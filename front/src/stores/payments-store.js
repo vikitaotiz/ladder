@@ -7,43 +7,47 @@ import { storedUser } from "src/utilities/stored_user";
 const user = storedUser();
 const token = user?.token;
 
-// export const usePaymentStore = defineStore("payments", {
-//   state: () => ({
-//     payments: [],
-//   }),
-
-//   actions: {
-//     async fetchPayments() {
-//       if (token) {
-//         const res = await get_call_module("payments", token);
-//         this.payments = res?.data;
-//         console.log("rtyu ", res);
-//         return this.payments;
-//       }
-//     },
-//   },
-// });
 export const usePaymentStore = defineStore("payments", {
   state: () => ({
     payments: [],
   }),
 
   actions: {
-    async fetchPayments(resultCode) {
+    async fetchPayments() {
       if (token) {
-        console.log(resultCode);
-        const res = await get_call_module("payments", token, resultCode);
+        const res = await get_call_module("payments", token);
         this.payments = res?.data;
-        console.log("rtyu ", res);
+        console.log("rtyu ", res.data);
         const { data } = res;
         data.forEach(item => {
-          console.log("my amt", item.amount); // Accessing the 'name' key
-        });
+                    console.log("my amt", item.amount); // Accessing the 'name' key
+                  });
         return this.payments;
-      }
-      else {
-        console.log("token error");
       }
     },
   },
 });
+// export const usePaymentStore = defineStore("payments", {
+//   state: () => ({
+//     payments: [],
+//   }),
+
+//   actions: {
+//     async fetchPayments(resultCode) {
+//       if (token) {
+//         console.log(resultCode);
+//         const res = await get_call_module("payments", token, resultCode);
+//         this.payments = res?.data;
+//         console.log("rtyu ", res);
+//         const { data } = res;
+//         data.forEach(item => {
+//           console.log("my amt", item.amount); // Accessing the 'name' key
+//         });
+//         return this.payments;
+//       }
+//       else {
+//         console.log("token error");
+//       }
+//     },
+//   },
+// });
