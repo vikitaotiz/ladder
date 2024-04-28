@@ -15,7 +15,7 @@ class PaymentsTableSeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             DB::table('payments')->insert([
                 'result_desc' => 'Result Description ' . ($i + 1),
-                'result_code' => 'Result Code ' . ($i + 1),
+                'result_code' => $this->getRandomResultCode(),
                 'merchant_request_id' => 'Merchant Request ID ' . ($i + 1),
                 'checkout_request_id' => 'Checkout Request ID ' . ($i + 1),
                 'amount' => rand(100, 1000),
@@ -28,6 +28,10 @@ class PaymentsTableSeeder extends Seeder
             ]);
         }
     }
+    private function getRandomResultCode()
+    {
+        $resultCodes = [0, 1, 423, null];
+        return $resultCodes[array_rand($resultCodes)];
+    }
 }
-
 

@@ -1,117 +1,100 @@
-<!-- <template>
-  <div>
-    <apexchart
-      width="500"
-      type="bar"
-      :options="chartOptions"
-      :series="series"
-    ></apexchart>
-      </div>
-</template> -->
-
 <template>
-  <div v-if="status === 'loading'">Loading...</div>
-  <div v-else-if="status === 'error'">Error fetching data</div>
-  <div v-else>
-    <vue-apex-charts :options="chartOptions" :series="series" type="bar" height="350" />
+  <div>
+    <div v-if="isLoading">Loading...</div>
+    <div v-if="error">{{ error }}</div>
+    <div v-if="data" class="row justify-center q-pa-lg">
+      <div class="col-xl-4 col-lg-6 col-md-6 col-sm-10 col-xs-12 q-pa-sm">
+        <apexchart
+          width="350"
+          type="bar"
+          :options="chartOptions"
+          :series="chartSeries"
+        ></apexchart>
+      </div>
+      <div class="col-xl-4 col-lg-6 col-md-6 col-sm-10 col-xs-12 q-pa-sm">
+      
+    <apexchart
+          type="donut"
+          :options="chartPieOptions"
+          :series="chartPieData"
+        ></apexchart>
+        {{ chartPieData}}
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import { usePaymentStore } from "src/stores/payments-store";
+import { ref, computed, watchEffect } from "vue";
 import { useQuery } from "vue-query";
-import VueApexCharts from 'vue3-apexcharts';
+import { usePaymentStore } from "src/stores/payments-store";
 
 const paymentStore = usePaymentStore();
-
-const {  data: payments, status} = useQuery("payments", () => paymentStore.fetchPayments());
-console.log("mydata", payments);
-payments.forEach(payment => {
-  const amount = payment.amount;
-  console.log('Payment amount:', amount);
+const { data } = useQuery("payments", paymentStore.fetchAllPayments, {
+  cacheTime: 0,
 });
+console.log("this mine23", data);
 
-if (status === "loading") {
-  console.log("Loading...");
-} else if (status === "error") {
-  console.log("Error fetching data");
-}
-const series = ref([
-{
-          name: "series-1",
-          data: payments,
-        },
-]);
-const chartOptions = ref({
-  chart: {
-    id: 'vue-chart',
-    toolbar: {
-      show: false,
-    },
-  },
-  xaxis: {
-    categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
-  },
+
+
+// const { data: data, isLoading: isLoading, error: error, refetch: refetch } = useQuery("payments", paymentStore.fetchAllPayments, { cacheTime: 0 });
+
+const chartSeries = computed(() => {
+  if (data) {
+    const you = data.value.sevenDaypay.map(item => item.total_amount);
+    return [
+
+      {
+        name: "Amount",
+        data: you,
+      },
+    ];
+  }
+ 
 });
-
-// if (true) {
-//   chartOptions.value.xaxis.categories = data.categories;
-//   series.value = [{
-//     name: 'Series 1',
-//     data: [30, 40, 45, 50, 49, 60, 70, 81],
-//     }];
-// }
-</script>
-
-
-
-<!-- <script>
-import VueApexCharts from "vue3-apexcharts";
-
-export default {
-  components: {
-    apexchart: VueApexCharts,
-  },
-  data: function() {
-    return {
-      chartOptions: {
+const chartOptions = computed(() => {
+  if (data) {
+    return  {
         chart: {
-          id: "vuechart-example",
+          id: "my-amounts",
+          background: "#fff",
+          width: "350px", // Use pixels for width
+          type: 'bar',
+          height:"550px",
         },
         xaxis: {
-          categories: [1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998],
+          // Uncomment and provide categories if needed
+          categories: data.value.sevenDaypay.map(item => item.date)
         },
-      },
-      series: [
-        {
-          name: "series-1",
-          data: [30, 40, 45, 50, 49, 60, 70, 81],
-        },
-      ],
-    };
-  },
-  methods: {
-    updateChart() {
-      const max = 90;
-      const min = 20;
-      const newData = this.series[0].data.map(() => {
-        return Math.floor(Math.random() * (max - min + 1)) + min;
-      });
-
-      const colors = ["#008FFB", "#00E396", "#FEB019", "#FF4560", "#775DD0"];
-
-      // Make sure to update the whole options config and not just a single property to allow the Vue watch catch the change.
-      this.chartOptions = {
-        colors: [colors[Math.floor(Math.random() * colors.length)]],
+        
       };
-      // In the same way, update the series option
-      this.series = [
-        {
-          data: newData,
-        },
-      ];
-    },
+  }
+ 
+});
+
+const chartPieOptions = computed(() => {
+  if (data) {
+    return {
+  chart: {
+    id: "my-pieamounts",
+    background: "#fff",
+    width: "350",
   },
+  labels: data.value.codeResult.map(item => item.code),
+  colors: ["#66DA26", "#2E93fA", "#546E7A", "#E91E63"],
 };
-</script> -->
+  }
+ 
+});
+
+
+const chartPieData =  computed(() => {
+  if (data) {
+    const you = data.value.codeResult.map(item => item.count);
+    // const you = data.value.sevenDaypay.map(item => item.total_amount);
+    return you;
+  }
+ 
+});
+</script>

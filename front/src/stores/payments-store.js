@@ -6,48 +6,43 @@ import { storedUser } from "src/utilities/stored_user";
 
 const user = storedUser();
 const token = user?.token;
-
 export const usePaymentStore = defineStore("payments", {
   state: () => ({
-    payments: [],
+    all: [],
+    unsuccPayments: [],
+    succPayments: [],
+    pendingPayments: [],
+    amount: [],
+    codeResponse: [],
+    sevenDaypayments: [],
   }),
 
   actions: {
-    async fetchPayments() {
+    async fetchAllPayments() {
       if (token) {
         const res = await get_call_module("payments", token);
-        this.payments = res?.data;
-        console.log("rtyu ", res.data);
-        const { data } = res;
-        data.forEach(item => {
-                    console.log("my amt", item.amount); // Accessing the 'name' key
-                  });
-        return this.payments;
-      }
-    },
-  },
-});
-// export const usePaymentStore = defineStore("payments", {
-//   state: () => ({
-//     payments: [],
-//   }),
+        this.all = res?.all;
+        this.amount = res?.all.map(item =>  parseFloat(item.amount));
+                this.pendingPayments = res?.pendingPayments;
+                this.unsuccPayments = res?.unsuccPayments;
+                this.succPayments = res?.succPayments;
+                this.codeResponse = res?.resultCodes;
+                this.sevenDaypayments = res?.sevenDaypayments;
+                console.log("this pp",res );
 
-//   actions: {
-//     async fetchPayments(resultCode) {
-//       if (token) {
-//         console.log(resultCode);
-//         const res = await get_call_module("payments", token, resultCode);
-//         this.payments = res?.data;
-//         console.log("rtyu ", res);
-//         const { data } = res;
-//         data.forEach(item => {
-//           console.log("my amt", item.amount); // Accessing the 'name' key
-//         });
-//         return this.payments;
-//       }
-//       else {
-//         console.log("token error");
-//       }
-//     },
-//   },
-// });
+        return {
+          payments: this.all,
+          amounts: this.amount,
+          unsucccesful: this.unsuccPayments,
+          succesful: this.succPayments,
+          pending: this.pendingPayments,
+          codeResult: this.codeResponse,
+          sevenDaypay: this.sevenDaypayments
+        };
+      }
+      else {
+                console.log("token error");
+              }
+    },
+  },  
+});

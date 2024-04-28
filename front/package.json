@@ -12,10 +12,11 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.16.4",
-    "apexcharts": "^3.48.0",
+    "apexcharts": "^3.49.0",
     "chart.js": "^4.4.2",
     "pinia": "^2.0.11",
     "quasar": "^2.8.0",
+    "react-query": "^3.39.3",
     "vue": "^3.4.18",
     "vue-chartjs": "^5.3.1",
     "vue-query": "^1.26.0",
