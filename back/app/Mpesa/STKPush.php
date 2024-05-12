@@ -3,6 +3,7 @@
 namespace App\Mpesa;
 
 use App\Models\Payment;
+use App\Events\PaymentSuccessEvent;
 use Illuminate\Http\Request;
 
 // This Class is responsible for getting a response from Safaricom and Storing the Transaction Details to the Database
@@ -27,6 +28,8 @@ class STKPush
             $mpesa_receipt_number = $items->firstWhere('Name', 'MpesaReceiptNumber')['Value'];
             $transaction_date = $items->firstWhere('Name', 'TransactionDate')['Value'];
             $phonenumber = $items->firstWhere('Name', 'PhoneNumber')['Value'];
+            broadcast(new PaymentSuccessEvent('Payment successful of'+ $amount + 'from', $phonenumber ));
+
 
             $stkPush = Payment::where('merchant_request_id', $merchant_request_id)
                 ->where('checkout_request_id', $checkout_request_id)->first();

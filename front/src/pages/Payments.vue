@@ -50,6 +50,10 @@
     </q-table>
   </div>
   <div v-if="genre === null">
+    <ul>
+      <li v-for="message in messages" :key="message.id">{{ message.text }}</li>
+    </ul>
+    
     <q-table
       title="Payments Records"
       :rows=all.pending
@@ -69,6 +73,14 @@ import { usePaymentStore } from "src/stores/payments-store";
 const paymentStore = usePaymentStore();
 import { useQuery } from "vue-query";
 const { data: all, isLoading: isLoading, error: error, refetch: refetch } = useQuery("payments", paymentStore.fetchAllPayments);
+const messages = ref([]);
+
+// Listen for 'message' event from Socket.IO server
+$socket.on('message', (data) => {
+  // Handle event data by adding to messages array
+  messages.value.push(data);
+});
+
 const genre = ref(2);
 const columns = ref([
   {
